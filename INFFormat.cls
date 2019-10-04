@@ -1,13 +1,34 @@
+% Clase que provee el formato de escuela de informática de la Universidad Católica de Valparaíso.
+% Copyright (C) 2019 Matias Barrientos G.
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{INFFormat}[2019/09/02 Formato INF PUCV]
 
+%% =============================================================================
 %% Tipo de papel y tamaño
 \LoadClass[letterpaper, 12pt]{article}
 
+%%=============================================================================
+%% Macros para agregar en la listas de siglas, glosario y simbolos,
+%% así no quedan con la hyperref
 \let\origcontentsline\contentsline
 \let\origaddtocontents\addtocontents
 
-%% Paquetes ----------
+%% =============================================================================
+%% Paquetes 
 \RequirePackage[top=2.5cm, right=2.5cm, bottom=2.5cm, left=3.0cm]{geometry} % Margenes
 \RequirePackage[spanish, english, es-tabla]{babel} % Idiomas 
 \RequirePackage[utf8]{inputenc} % Formato UTF8 del texto
@@ -26,23 +47,18 @@
 \RequirePackage{titlesec} % Para la redefinicion de las secciones 
 \RequirePackage[nottoc]{tocbibind} % Poder agregar la seccion a las figuras
 \RequirePackage{minted} % Para agregar codigo
-%% ----------
+\RequirePackage{xkeyval}
+\RequirePackage{etoolbox}
 
-%% Opciones
-\newif\ifsiglas
-\newif\ifglosario
-\newif\ifsimbolos
+%% =============================================================================
+%% Parámetros clase ----------
 \newif\iftesis
 
-\DeclareOption{siglas}{\siglastrue} 
-\DeclareOption{glosario}{\glosariotrue} 
-\DeclareOption{simbolos}{\simbolostrue} 
-\DeclareOption{tesis}{\tesistrue} 
-\ProcessOptions\relax
+\DeclareOptionX{tesis}[true]{\ifthenelse{\equal{#1}{true}}{\tesistrue}{\tesisfalse}}
+\ProcessOptionsX
 
-%% https://www.tablesgenerator.com/
-
-%% Configuraciones ----------
+%%=============================================================================
+%% Configuraciones 
 \setlength{\parindent}{1cm} % sangría 
 \setlength{\parskip}{12pt} % espaciado entre párrafos 
 \addto\captionsenglish{\renewcommand{\contentsname}{Índice}} % nombre de la tabla de contenidos 
@@ -84,9 +100,9 @@
 % Se redefine la seccion para que cuando se ponga una cree una nueva pagina
 \let\stdsection\section
 \renewcommand\section{\newpage\stdsection}
-%% ----------
 
-%% Fecha ----------
+%% =============================================================================
+%% Fecha (MES)
 \newcommand{\MONTH}{%
   \ifcase\month% 0
     \or Enero,% 1
@@ -103,17 +119,17 @@
     \or Diciembre,% 12
   \fi}
 \newcommand{\YEAR}{\number\year}
-%% ----------
 
-%% Libreria authblk ----------
+%% =============================================================================
+%% Libreria authblk
 \renewcommand{\Authsep}{\newline}
 \renewcommand{\Authand}{\newline}
 \renewcommand{\Authands}{\newline}
 \renewcommand{\Authfont}{\normalsize\bfseries} % Nombre del autor en bold
 \newcommand{\authorspace}{\authorcr\vspace{0.8em}}
-%% ----------
 
-%% Opciones ----------
+%% =============================================================================
+%% Macros 
 \def\informe#1{\gdef\@informe{#1}}
 \def\@informe{\@latex@warning@no@line{\noexpand\informe}}
 
@@ -129,12 +145,13 @@
 \def\carrera#1{\gdef\@carrera{#1}}
 \def\@carrera{\@latex@warning@no@line{\noexpand\carrera}}
 
+\abstractfile{none}
 \profesorguia{Nombre y 2 Apellidos}
 \profesorco{Nombre y 2 Apellidos}
 \carrera{Ingeniería Civil en Informática}
-%% ----------
 
-%% Portada ----------
+%% =============================================================================
+%% Portada Tesis 
 \newcommand{\maketesistitle}{
     \begin{center} 
         \thispagestyle{empty} 
@@ -174,6 +191,8 @@
     \end{center}  
 }
 
+%% =============================================================================
+%% Portada 
 \renewcommand{\maketitle}{ %
     \begin{center} 
         \thispagestyle{empty} 
@@ -207,9 +226,9 @@
         \maketesistitle
     \fi
 }
-%% ----------
 
-%% Glosario ----------
+%% =============================================================================
+%% Lista Glosario
 \newcommand{\listglosarioname}{Glosario de Términos}
 \newlistof{glosario}{glo}{\listglosarioname}
 
@@ -223,9 +242,9 @@
 \setlength{\cftbeforeglosarioskip}{1em}
 \renewcommand{\cftglotitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{glosario}
-%% ----------
 
-%% Lista de siglas ----------
+%% =============================================================================
+%% Lista de siglas
 \newcommand{\listsiglaname}{Lista de Abreviaturas o Siglas}
 \newlistof{sigla}{sig}{\listsiglaname}
 
@@ -238,9 +257,9 @@
 \setlength{\cftbeforesiglaskip}{1em}
 \renewcommand{\cftsigtitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{sigla}
-%% ----------
 
-%% Lista de simbolos ----------
+%% =============================================================================
+%% Lista de simbolos
 \newcommand{\listsimbolosname}{Lista de Símbolos}
 \newlistof{simbolo}{sim}{\listsimbolosname}
 
@@ -253,11 +272,11 @@
 \setlength{\cftbeforesimboloskip}{1em}
 \renewcommand{\cftsimtitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{simbolo}
-%% ----------
 
 
 
-%% LoF y LoT ----------
+%% =============================================================================
+%% LoF y LoT
 % Para esconder la LoF o LoT en caso que no haya contenido
 % https://tex.stackexchange.com/questions/234398/list-of-figures-and-tables-when-there-are-no-figures-or-tables
 \restylefloat{figure}
@@ -281,27 +300,30 @@
     \immediate\write\@mainaux{\global\string\tablestrue}%
     \global\let\tables@in@document\empty
 }
-%% ----------
 
-
-%% Cuerpo ----------
-\newcommand{\makecorpus}{ %
-    
+%% =============================================================================
+%% Corpus
+\define@boolkey{corpus}{glosario}{}
+\define@boolkey{corpus}{siglas}{}
+\define@boolkey{corpus}{simbolos}{}
+\setkeys{corpus}{siglas=false, glosario=false, simbolos=false}
+\newcommand{\makecorpus}[1][]{%
+    \setkeys{corpus}{#1}
+   
     % Tabla de contenido
     \pagenumbering{roman}
     \tableofcontents
     \newpage
     
-    % Resumen
-    \ifblank{\@abstractfile}{}{
+    \ifdefempty{\@abstractfile}{}{
         \phantomsection
         \addcontentsline{toc}{section}{Resumen}
         \include{\@abstractfile}
         \newpage
     }
-    
+
     % Glosario
-    \ifglosario
+    \ifKV@corpus@glosario
         \phantomsection
         \addcontentsline{toc}{section}{\listglosarioname}
         \listofglosario
@@ -309,7 +331,7 @@
     \fi
     
     % Siglas
-    \ifsiglas
+    \ifKV@corpus@siglas
         \phantomsection
         \addcontentsline{toc}{section}{\listsiglaname}
         \listofsigla
@@ -317,7 +339,7 @@
     \fi
     
     % Simbolos
-    \ifsimbolos
+    \ifKV@corpus@simbolos
         \phantomsection
         \addcontentsline{toc}{section}{\listsimbolosname}
         \listofsimbolo
@@ -346,6 +368,5 @@
     \fi
     }
     
-    % Cuerpo
     \pagenumbering{arabic}
 }
