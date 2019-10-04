@@ -1,0 +1,38 @@
+\documentclass[siglas, glosario, tesis]{INFFormat}
+
+\title{Formato Escuela INF PUCV}
+\author{
+    2 NOMBRES Y 2 APELLIDOS ALUMNO
+    \authorspace
+    2 NOMBRES Y 2 APELLIDOS ALUMNO
+}
+\informe{
+    INFORME FINAL DEL PROYECTO\\
+    PARA OPTAR AL TÍTULO PROFESIONAL DE\\
+    INGENIERO CIVIL EN INFORMÁTICA 
+}
+\abstractfile{Resumen/resumen}
+\date{\MONTH\ \YEAR}
+
+\newminted[codigojava]{java}{fontsize=\small, baselinestretch=1.5, breaklines, autogobble, xleftmargin=0.1\textwidth,xrightmargin=0.1\textwidth}
+
+\begin{document}
+
+    \maketitle
+
+    \makecorpus
+    
+    %% El glosario y las siglas va primero que todo después del corpus !!!
+    \include{glosario_sigla/glosario}
+    \include{glosario_sigla/siglas}
+
+    %% Contenido    
+    \include{Introduccion/introduccion}
+    
+    \include{Capitulo_1/capitulo_1}
+    
+    \include{Capitulo_2/capitulo_2}
+    
+    
+    
+\end{document}
