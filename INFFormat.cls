@@ -31,10 +31,12 @@
 %% Opciones
 \newif\ifsiglas
 \newif\ifglosario
+\newif\ifsimbolos
 \newif\iftesis
 
 \DeclareOption{siglas}{\siglastrue} 
 \DeclareOption{glosario}{\glosariotrue} 
+\DeclareOption{simbolos}{\simbolostrue} 
 \DeclareOption{tesis}{\tesistrue} 
 \ProcessOptions\relax
 
@@ -232,10 +234,25 @@
 \origaddtocontents{sig}{\protect\origcontentsline{sigla}{#1: #2}{}}\par
 }
 
-\setlength{\cftglosarionumwidth}{0.1em}
+\setlength{\cftsiglanumwidth}{0.1em}
 \setlength{\cftbeforesiglaskip}{1em}
 \renewcommand{\cftsigtitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{sigla}
+%% ----------
+
+%% Lista de simbolos ----------
+\newcommand{\listsimbolosname}{Lista de Símbolos}
+\newlistof{simbolo}{sim}{\listsimbolosname}
+
+\newcommand{\simbolo}[2]{%
+\refstepcounter{simbolo}
+\origaddtocontents{sim}{\protect\origcontentsline{simbolo}{#1: #2}{}}\par
+}
+
+\setlength{\cftsimbolonumwidth}{0.1em}
+\setlength{\cftbeforesimboloskip}{1em}
+\renewcommand{\cftsimtitlefont}{\cfttoctitlefont}
+\cftpagenumbersoff{simbolo}
 %% ----------
 
 
@@ -296,6 +313,14 @@
         \phantomsection
         \addcontentsline{toc}{section}{\listsiglaname}
         \listofsigla
+        \newpage
+    \fi
+    
+    % Simbolos
+    \ifsimbolos
+        \phantomsection
+        \addcontentsline{toc}{section}{\listsimbolosname}
+        \listofsimbolo
         \newpage
     \fi
     
