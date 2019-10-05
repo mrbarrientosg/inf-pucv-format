@@ -30,9 +30,9 @@
 %% =============================================================================
 %% Paquetes 
 \RequirePackage[top=2.5cm, right=2.5cm, bottom=2.5cm, left=3.0cm]{geometry} % Margenes
-\RequirePackage[spanish, english, es-tabla]{babel} % Idiomas 
+\RequirePackage[english, activeacute, spanish, es-tabla, es-lcroman, es-nosectiondot]{babel} % Idiomas 
+\RequirePackage[labelsep=space, tableposition=top]{caption} % Separacion de captions figuras
 \RequirePackage[utf8]{inputenc} % Formato UTF8 del texto
-\RequirePackage[labelsep=space]{caption} % Separacion de captions figuras
 \RequirePackage[T1]{fontenc} % Fuente para que acepte acentos y etc.
 \RequirePackage{graphicx} % Para poder incluir imagenes
 \RequirePackage{fancyhdr} % No me acuerdo el porque de este paquete xd.
@@ -43,7 +43,7 @@
 \RequirePackage{tocloft} % Para poder manejar la toc
 \RequirePackage{multirow} % tablas 
 \RequirePackage{indentfirst} % sangría 
-\RequirePackage{authblk} % Para poder tener multi autores
+%\RequirePackage{authblk} % Para poder tener multi autores
 \RequirePackage{titlesec} % Para la redefinicion de las secciones 
 \RequirePackage[nottoc]{tocbibind} % Poder agregar la seccion a las figuras
 \RequirePackage{minted} % Para agregar codigo
@@ -59,11 +59,10 @@
 
 %%=============================================================================
 %% Configuraciones 
+\titlelabel{\thetitle\; }
+
 \setlength{\parindent}{1cm} % sangría 
 \setlength{\parskip}{12pt} % espaciado entre párrafos 
-\addto\captionsenglish{\renewcommand{\contentsname}{Índice}} % nombre de la tabla de contenidos 
-\addto\captionsenglish{\renewcommand{\figurename}{Figura}} % Se cambia el nombre de las figuras en ingles a español
-\addto\captionsenglish{\renewcommand{\tablename}{Tabla}} % Se cambia el nombre de las tablas en ingles a español
 
 % Se hace esto, por un error de paginacion del documente
 \fancypagestyle{plain}{
@@ -122,11 +121,11 @@
 
 %% =============================================================================
 %% Libreria authblk
-\renewcommand{\Authsep}{\newline}
-\renewcommand{\Authand}{\newline}
-\renewcommand{\Authands}{\newline}
-\renewcommand{\Authfont}{\normalsize\bfseries} % Nombre del autor en bold
-\newcommand{\authorspace}{\authorcr\vspace{0.8em}}
+\newcommand{\authorspace}{\\[0.5em]}
+%\renewcommand{\Authsep}{\protect\authorspace}
+%\renewcommand{\Authand}{\protect\authorspace}
+%\renewcommand{\Authands}{\protect\authorspace}
+%\renewcommand{\Authfont}{\protect\normalsize\bfseries} % Nombre del autor en bold
 
 %% =============================================================================
 %% Macros 
@@ -155,26 +154,29 @@
 \newcommand{\maketesistitle}{
     \begin{center} 
         \thispagestyle{empty} 
+        \large
         Pontificia Universidad Católica de Valparaíso\\
         Facultad de Ingeniería\\
         Escuela de Ingeniería Informática
         \vspace{5cm} 
      
-        \LARGE{\textbf{\@title}}
+        \Large{\textbf{\@title}}
         \vspace{3cm} 
     
-        {
-        \@author
-        }
-
-        \vspace*{\fill}
+        \normalsize
+        \bfseries
+        \begin{tabular}{l}
+            \@author
+        \end{tabular}
         
-        {
+        \vspace*{\fill}
+    \end{center} 
+    
+    \begin{center}
         \normalsize
         Profesor Guía: \textbf{\@profesorguia}\\
         \vspace{1.5em}
         Profesor Co-referente: \textbf{\@profesorco}
-        }
         
         \vspace*{\fill}
         
@@ -182,7 +184,7 @@
         Carrera: \textbf{\@carrera}
         
         \vspace*{\fill}
-    \end{center} 
+    \end{center}
 
 
     \begin{center} 
@@ -196,17 +198,22 @@
 \renewcommand{\maketitle}{ %
     \begin{center} 
         \thispagestyle{empty} 
+        \large
         PONTIFICIA UNIVERSIDAD CATÓLICA DE VALPARAÍSO\\ 
         FACULTAD DE INGENIERÍA\\ 
         ESCUELA DE INGENIERÍA INFORMÁTICA 
         \vspace{5cm} 
      
-        \LARGE{\textbf{\@title}}
+        \Large{\textbf{\@title}}
         \vspace{3cm} 
+        
+        \normalsize
+        \bfseries
+        \begin{tabular}{l}
+            \@author
+        \end{tabular}
 
-        \@author
-
-        \vspace*{\fill} 
+        \vspace{3cm} 
     \end{center} 
     
     \begin{flushright} 
@@ -215,7 +222,7 @@
         \end{tabular}
     \end{flushright} 
     
-    \vspace{3cm} 
+    \vspace*{\fill}
 
     \begin{center} 
         \@date
@@ -279,8 +286,6 @@
 %% LoF y LoT
 % Para esconder la LoF o LoT en caso que no haya contenido
 % https://tex.stackexchange.com/questions/234398/list-of-figures-and-tables-when-there-are-no-figures-or-tables
-\restylefloat{figure}
-\restylefloat{table}
 
 \newif\iffigures
 \newif\iftables
@@ -369,4 +374,25 @@
     }
     
     \pagenumbering{arabic}
+}
+
+\newenvironment{anexos}{
+    % Para dejar sin numero de pagina los anexos 
+    \cleardoublepage
+    \pagenumbering{gobble}
+    
+    \appendix
+    \phantomsection
+    \addcontentsline{toc}{section}{Anexos}
+    \renewcommand{\thesubsection}{\Alph{subsection}:} % Se cambia a letra, ademas con :
+}{
+    \cleardoublepage
+    \pagenumbering{arabic}
+    \renewcommand{\thesubsection}{subsection}
+}
+
+% Para crear un anexo
+\newcommand{\anexo}[1]{
+    \subsection{#1}
+    \newpage
 }

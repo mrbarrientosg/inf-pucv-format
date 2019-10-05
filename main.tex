@@ -32,8 +32,10 @@
 \date{\MONTH\ \YEAR}
 
 %% =============================================================================
-%% Forma de definir codigo
+%% Forma de definir código
 \newminted[codigojava]{java}{fontsize=\small, baselinestretch=1.5, breaklines, autogobble, xleftmargin=0.1\textwidth,xrightmargin=0.1\textwidth}
+
+
 
 %% =============================================================================
 %% Documento
@@ -57,10 +59,16 @@
     
     %% =============================================================================
     %% Contenido    
+    
     \include{Introduccion/introduccion}
     
     \include{Capitulo_1/capitulo_1}
     
     \include{Capitulo_2/capitulo_2}
+    
+    \begin{anexos}
+        \anexo{Anexo A}
+    \end{anexos}
+
     
 \end{document}
