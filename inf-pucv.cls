@@ -15,21 +15,30 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{INFFormat}[2019/09/02 Formato INF PUCV]
+\ProvidesClass{inf-pucv}[2019/09/02 Formato Escuela Informatica PUCV]
 
-%% =============================================================================
-%% Tipo de papel y tamaño
-\LoadClass[letterpaper, 12pt]{article}
-
-%%=============================================================================
 %% Macros para agregar en la listas de siglas, glosario y simbolos,
 %% así no quedan con la hyperref
 \let\origcontentsline\contentsline
 \let\origaddtocontents\addtocontents
 
-%% =============================================================================
-%% Paquetes 
-\RequirePackage[top=2.5cm, right=2.5cm, bottom=2.5cm, left=3.0cm]{geometry} % Margenes
+% ========== Parámetros clase  =================
+\RequirePackage{xkeyval} % Paquete para parametros key=value 
+\RequirePackage{ifthen} % Paquete para hacer ifthenelse
+
+\newif\iftesis
+
+\DeclareOptionX{tesis}[true]{\ifthenelse{\equal{#1}{true}}{\tesistrue}{\tesisfalse}}
+\ProcessOptionsX
+
+% ========== Tipo de papel y tamaño  =================
+\PassOptionsToPackage{top=2.5cm, right=2.5cm, bottom=2.5cm, left=3.0cm}{geometry} % Se pre-carga el paquete para los margenes.
+    % Se puso aqui para, despues poder cambiar los margenes en caso que sea doble-cara
+
+\LoadClass[letterpaper, 12pt]{article} % Se carga la clase con el formato de articulo
+
+% ========== Paquetes =================
+\RequirePackage{geometry} % Margenes
 \RequirePackage[english, activeacute, spanish, es-tabla, es-lcroman, es-nosectiondot]{babel} % Idiomas 
 \RequirePackage[labelsep=space, tableposition=top]{caption} % Separacion de captions figuras
 \RequirePackage[utf8]{inputenc} % Formato UTF8 del texto
@@ -43,28 +52,18 @@
 \RequirePackage{tocloft} % Para poder manejar la toc
 \RequirePackage{multirow} % tablas 
 \RequirePackage{indentfirst} % sangría 
-%\RequirePackage{authblk} % Para poder tener multi autores
 \RequirePackage{titlesec} % Para la redefinicion de las secciones 
 \RequirePackage[nottoc]{tocbibind} % Poder agregar la seccion a las figuras
 \RequirePackage{minted} % Para agregar codigo
-\RequirePackage{xkeyval}
 \RequirePackage{etoolbox}
 
-%% =============================================================================
-%% Parámetros clase ----------
-\newif\iftesis
-
-\DeclareOptionX{tesis}[true]{\ifthenelse{\equal{#1}{true}}{\tesistrue}{\tesisfalse}}
-\ProcessOptionsX
-
-%%=============================================================================
-%% Configuraciones 
-\titlelabel{\thetitle\; }
+% ========== Configuraciones  =================
+\titlelabel{\thetitle\; } % Separacion de las secciones entre el numero y el titulo
 
 \setlength{\parindent}{1cm} % sangría 
-\setlength{\parskip}{12pt} % espaciado entre párrafos 
+\setlength{\parskip}{1em} % espaciado entre párrafos 
 
-% Se hace esto, por un error de paginacion del documente
+% Se hace esto, por un error de paginacion del documento
 \fancypagestyle{plain}{
     \fancyhf{}
     \renewcommand{\headrulewidth}{0pt}
@@ -100,8 +99,7 @@
 \let\stdsection\section
 \renewcommand\section{\newpage\stdsection}
 
-%% =============================================================================
-%% Fecha (MES)
+% ========== Fecha (MES)  =================
 \newcommand{\MONTH}{%
   \ifcase\month% 0
     \or Enero,% 1
@@ -119,21 +117,44 @@
   \fi}
 \newcommand{\YEAR}{\number\year}
 
-%% =============================================================================
-%% Libreria authblk
+% ========== Autor =================
 \newcommand{\authorspace}{\\[0.5em]}
-%\renewcommand{\Authsep}{\protect\authorspace}
-%\renewcommand{\Authand}{\protect\authorspace}
-%\renewcommand{\Authands}{\protect\authorspace}
-%\renewcommand{\Authfont}{\protect\normalsize\bfseries} % Nombre del autor en bold
 
-%% =============================================================================
-%% Macros 
+% ========== Resumen/Abstract =================
+\def\abstractfile#1{\gdef\@abstractfile{#1}}
+
+\newcommand{\makeabstract}[1][Resumen]{
+    \ifdefined\@abstractfile
+        \phantomsection
+        \addcontentsline{toc}{section}{#1}
+        \input{\@abstractfile}
+        \newpage
+    \fi
+}
+
+% ========== Dedicatoria =================
+\def\dedicatoriafile#1{\gdef\@dedicatoriafile{#1}}
+
+\newcommand{\makededicatoria}[1][Resumen]{
+    \ifdefined\@dedicatoriafile
+        \thispagestyle{empty} 
+        \input{\@dedicatoriafile}
+        \newpage
+    \fi
+}
+
+% ========== Referencias =================
+\newcommand{\makereferencia}[1]{
+    \renewcommand\refname{Referencias}
+    \phantomsection
+    \bibliographystyle{unsrt}
+    \bibliography{#1}	
+}
+
+
+% ========== Macros =================
 \def\informe#1{\gdef\@informe{#1}}
 \def\@informe{\@latex@warning@no@line{\noexpand\informe}}
-
-\def\abstractfile#1{\gdef\@abstractfile{#1}}
-\def\@abstractfile{\@latex@warning@no@line{\noexpand\abstractfile}}
 
 \def\profesorguia#1{\gdef\@profesorguia{#1}}
 \def\@profesorguia{\@latex@warning@no@line{\noexpand\profesorguia}}
@@ -144,14 +165,12 @@
 \def\carrera#1{\gdef\@carrera{#1}}
 \def\@carrera{\@latex@warning@no@line{\noexpand\carrera}}
 
-\abstractfile{none}
 \profesorguia{Nombre y 2 Apellidos}
 \profesorco{Nombre y 2 Apellidos}
 \carrera{Ingeniería Civil en Informática}
 
-%% =============================================================================
-%% Portada Tesis 
-\newcommand{\maketesistitle}{
+% ========== Portada Tesis =================
+\newcommand{\makeportadatesis}{
     \begin{center} 
         \thispagestyle{empty} 
         \large
@@ -193,9 +212,8 @@
     \end{center}  
 }
 
-%% =============================================================================
-%% Portada 
-\renewcommand{\maketitle}{ %
+% ========== Portada =================
+\newcommand{\makeportada}{ %
     \begin{center} 
         \thispagestyle{empty} 
         \large
@@ -226,16 +244,16 @@
 
     \begin{center} 
         \@date
-        \newpage 
     \end{center} 
     
+    \newpage
+    
     \iftesis
-        \maketesistitle
+        \makeportadatesis
     \fi
 }
 
-%% =============================================================================
-%% Lista Glosario
+% ========== Lista Glosario =================
 \newcommand{\listglosarioname}{Glosario de Términos}
 \newlistof{glosario}{glo}{\listglosarioname}
 
@@ -250,8 +268,7 @@
 \renewcommand{\cftglotitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{glosario}
 
-%% =============================================================================
-%% Lista de siglas
+% ========== Lista Siglas =================
 \newcommand{\listsiglaname}{Lista de Abreviaturas o Siglas}
 \newlistof{sigla}{sig}{\listsiglaname}
 
@@ -265,8 +282,7 @@
 \renewcommand{\cftsigtitlefont}{\cfttoctitlefont}
 \cftpagenumbersoff{sigla}
 
-%% =============================================================================
-%% Lista de simbolos
+% ========== Lista Simbolos =================
 \newcommand{\listsimbolosname}{Lista de Símbolos}
 \newlistof{simbolo}{sim}{\listsimbolosname}
 
@@ -281,9 +297,7 @@
 \cftpagenumbersoff{simbolo}
 
 
-
-%% =============================================================================
-%% LoF y LoT
+% ========== LoF y LoT =================
 % Para esconder la LoF o LoT en caso que no haya contenido
 % https://tex.stackexchange.com/questions/234398/list-of-figures-and-tables-when-there-are-no-figures-or-tables
 
@@ -306,26 +320,24 @@
     \global\let\tables@in@document\empty
 }
 
-%% =============================================================================
-%% Corpus
+% ========== Corpus =================
 \define@boolkey{corpus}{glosario}{}
 \define@boolkey{corpus}{siglas}{}
 \define@boolkey{corpus}{simbolos}{}
 \setkeys{corpus}{siglas=false, glosario=false, simbolos=false}
 \newcommand{\makecorpus}[1][]{%
     \setkeys{corpus}{#1}
+    
+    \makededicatoria
    
     % Tabla de contenido
     \pagenumbering{roman}
-    \tableofcontents
+    \begin{center}
+        \tableofcontents
+    \end{center}
     \newpage
     
-    \ifdefempty{\@abstractfile}{}{
-        \phantomsection
-        \addcontentsline{toc}{section}{Resumen}
-        \include{\@abstractfile}
-        \newpage
-    }
+    \makeabstract
 
     % Glosario
     \ifKV@corpus@glosario
@@ -376,14 +388,15 @@
     \pagenumbering{arabic}
 }
 
-\newenvironment{anexos}{
+% ========== Anexo =================
+\newenvironment{anexos}[1][Anexos]{
     % Para dejar sin numero de pagina los anexos 
     \cleardoublepage
     \pagenumbering{gobble}
     
     \appendix
     \phantomsection
-    \addcontentsline{toc}{section}{Anexos}
+    \addcontentsline{toc}{section}{#1}
     \renewcommand{\thesubsection}{\Alph{subsection}:} % Se cambia a letra, ademas con :
 }{
     \cleardoublepage
