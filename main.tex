@@ -1,20 +1,18 @@
-% Ejemplo de uso del formato.
-% Copyright (C) 2019 Matias Barrientos G.
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%
+%% Copyright (C) 2019 by Matias Barrientos G.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3 of this license or (at your option) any later
+%% version. The latest version of this license is in:
+%%
+%% http://www.latex-project.org/lppl.txt
+%%
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%%
 
-\documentclass[tesis=true]{inf-pucv}
+\documentclass[thesis=true, twoside=false]{inf-pucv-format}
 
 % ========== Portada =================
 \title{Formato Escuela INF PUCV}
@@ -26,7 +24,7 @@
 \informe{
     INFORME FINAL DEL PROYECTO\\
     PARA OPTAR AL TÍTULO PROFESIONAL DE\\
-    INGENIERO CIVIL EN INFORMÁTICA 
+    INGENIERO CIVIL EN INFORMÁTICA
 }
 \date{\MONTH\ \YEAR}
 
@@ -39,27 +37,27 @@
 
 % ========== Documento =================
 \begin{document}
-    
+
     % Para generar la portada
     \makeportada
 
     % ========== Corpus =================
     % Genera el cuerpo basico como: ToC, LoF, LoT, resumen, siglas, glosario, simbolos.
-    \makecorpus[siglas=true, glosario=true, simbolos=true] 
+    \makecorpus[siglas=true, glosario=true, simbolos=true]
     % El glosario, las siglas y los simbolos va primero que todo después del corpus !!!
     \include{glosario_sigla/glosario}
     \include{glosario_sigla/siglas}
     \include{glosario_sigla/simbolos}
-    
+
     % ========== Contenido =================
     \include{Introduccion/introduccion}
-    
+
     \include{Capitulo_1/capitulo_1}
-    
+
     \include{Capitulo_2/capitulo_2}
-    
+
     % ========== Bibliografia =================
-    \makereferencia{bibliography.bib}
+    \makereferencia{bibliography} % Nombre del archivo de refenrencia
     % \nocite{*} % Latex por defecto no muestra la referencia si no fue citada, con el comando se muestran
                  % todas las referencias
 
@@ -67,8 +65,6 @@
     \begin{anexos}
         \anexo{Anexo A}
     \end{anexos}
-    
 
 
-    
 \end{document}

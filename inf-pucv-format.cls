@@ -1,21 +1,19 @@
-% Clase que provee el formato de escuela de informática de la Universidad Católica de Valparaíso.
-% Copyright (C) 2019 Matias Barrientos G.
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%%
+%% Copyright (C) 2019 by Matias Barrientos G.
+%%
+%% This file may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either
+%% version 1.3 of this license or (at your option) any later
+%% version. The latest version of this license is in:
+%%
+%% http://www.latex-project.org/lppl.txt
+%%
+%% and version 1.3 or later is part of all distributions of
+%% LaTeX version 2005/12/01 or later.
+%%
 
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{inf-pucv}[2019/09/02 Formato Escuela Informatica PUCV]
+\NeedsTeXFormat{LaTeX2e}[2005/11/02]
+\ProvidesClass{inf-pucv-format}[2019/09/02 Formato Escuela Informatica PUCV]
 
 %% Macros para agregar en la listas de siglas, glosario y simbolos,
 %% así no quedan con la hyperref
@@ -23,23 +21,31 @@
 \let\origaddtocontents\addtocontents
 
 % ========== Parámetros clase  =================
-\RequirePackage{xkeyval} % Paquete para parametros key=value 
+\RequirePackage{xkeyval} % Paquete para parametros key=value
 \RequirePackage{ifthen} % Paquete para hacer ifthenelse
 
-\newif\iftesis
+\newif\ifthesis
+\newif\iftwoside
 
-\DeclareOptionX{tesis}[true]{\ifthenelse{\equal{#1}{true}}{\tesistrue}{\tesisfalse}}
+\DeclareOptionX{thesis}[true]{\ifthenelse{\equal{#1}{true}}{\thesistrue}{\thesisfalse}}
+\DeclareOptionX{twoside}[true]{\ifthenelse{\equal{#1}{true}}{\twosidetrue}{\twosidefalse}}
 \ProcessOptionsX
 
 % ========== Tipo de papel y tamaño  =================
-\PassOptionsToPackage{top=2.5cm, right=2.5cm, bottom=2.5cm, left=3.0cm}{geometry} % Se pre-carga el paquete para los margenes.
-    % Se puso aqui para, despues poder cambiar los margenes en caso que sea doble-cara
+\PassOptionsToPackage{top=2.5cm, bottom=2.5cm}{geometry} % Se pre-carga el paquete para los margenes.
+
+\iftwoside
+    \PassOptionsToPackage{top=2.5cm, bottom=2.5cm, inner=2.5cm, outer=3cm}{geometry}
+    \PassOptionsToClass{twoside}{article}
+\else
+    \PassOptionsToPackage{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm}{geometry}
+\fi
 
 \LoadClass[letterpaper, 12pt]{article} % Se carga la clase con el formato de articulo
 
 % ========== Paquetes =================
-\RequirePackage{geometry} % Margenes
-\RequirePackage[english, activeacute, spanish, es-tabla, es-lcroman, es-nosectiondot]{babel} % Idiomas 
+\RequirePackage[paper=letterpaper]{geometry} % Margenes
+\RequirePackage[english, activeacute, spanish, es-tabla, es-lcroman, es-nosectiondot]{babel} % Idiomas
 \RequirePackage[labelsep=space, tableposition=top]{caption} % Separacion de captions figuras
 \RequirePackage[utf8]{inputenc} % Formato UTF8 del texto
 \RequirePackage[T1]{fontenc} % Fuente para que acepte acentos y etc.
@@ -50,18 +56,17 @@
 \RequirePackage{enumerate} % Para hacer enumeraciones
 \RequirePackage{float} % Para posicionar las imagenes
 \RequirePackage{tocloft} % Para poder manejar la toc
-\RequirePackage{multirow} % tablas 
-\RequirePackage{indentfirst} % sangría 
-\RequirePackage{titlesec} % Para la redefinicion de las secciones 
+\RequirePackage{multirow} % tablas
+\RequirePackage{indentfirst} % sangría
+\RequirePackage{titlesec} % Para la redefinicion de las secciones
 \RequirePackage[nottoc]{tocbibind} % Poder agregar la seccion a las figuras
 \RequirePackage{minted} % Para agregar codigo
-\RequirePackage{etoolbox}
 
 % ========== Configuraciones  =================
 \titlelabel{\thetitle\; } % Separacion de las secciones entre el numero y el titulo
 
-\setlength{\parindent}{1cm} % sangría 
-\setlength{\parskip}{1em} % espaciado entre párrafos 
+\setlength{\parindent}{1cm} % sangría
+\setlength{\parskip}{1em} % espaciado entre párrafos
 
 % Se hace esto, por un error de paginacion del documento
 \fancypagestyle{plain}{
@@ -70,10 +75,10 @@
     \rfoot{\thepage}
 }
 
-\pagestyle{plain} 
+\pagestyle{plain}
 
 % Tabla de contenidos acepta hasta 4 niveles de profundidad
-\setcounter{tocdepth}{4} 
+\setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
 
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % Para poner puntitos a la toc en las secciones
@@ -137,7 +142,7 @@
 
 \newcommand{\makededicatoria}[1][Resumen]{
     \ifdefined\@dedicatoriafile
-        \thispagestyle{empty} 
+        \thispagestyle{empty}
         \input{\@dedicatoriafile}
         \newpage
     \fi
@@ -148,7 +153,7 @@
     \renewcommand\refname{Referencias}
     \phantomsection
     \bibliographystyle{unsrt}
-    \bibliography{#1}	
+    \bibliography{#1}
 }
 
 
@@ -171,84 +176,84 @@
 
 % ========== Portada Tesis =================
 \newcommand{\makeportadatesis}{
-    \begin{center} 
-        \thispagestyle{empty} 
+    \begin{center}
+        \thispagestyle{empty}
         \large
         Pontificia Universidad Católica de Valparaíso\\
         Facultad de Ingeniería\\
         Escuela de Ingeniería Informática
-        \vspace{5cm} 
-     
+        \vspace{5cm}
+
         \Large{\textbf{\@title}}
-        \vspace{3cm} 
-    
+        \vspace{3cm}
+
         \normalsize
         \bfseries
         \begin{tabular}{l}
             \@author
         \end{tabular}
-        
+
         \vspace*{\fill}
-    \end{center} 
-    
+    \end{center}
+
     \begin{center}
         \normalsize
         Profesor Guía: \textbf{\@profesorguia}\\
         \vspace{1.5em}
         Profesor Co-referente: \textbf{\@profesorco}
-        
+
         \vspace*{\fill}
-        
-        \normalsize 
+
+        \normalsize
         Carrera: \textbf{\@carrera}
-        
+
         \vspace*{\fill}
     \end{center}
 
 
-    \begin{center} 
+    \begin{center}
         \@date
-        \newpage 
-    \end{center}  
+        \newpage
+    \end{center}
 }
 
 % ========== Portada =================
 \newcommand{\makeportada}{ %
-    \begin{center} 
-        \thispagestyle{empty} 
+    \begin{center}
+        \thispagestyle{empty}
         \large
-        PONTIFICIA UNIVERSIDAD CATÓLICA DE VALPARAÍSO\\ 
-        FACULTAD DE INGENIERÍA\\ 
-        ESCUELA DE INGENIERÍA INFORMÁTICA 
-        \vspace{5cm} 
-     
+        PONTIFICIA UNIVERSIDAD CATÓLICA DE VALPARAÍSO\\
+        FACULTAD DE INGENIERÍA\\
+        ESCUELA DE INGENIERÍA INFORMÁTICA
+        \vspace{5cm}
+
         \Large{\textbf{\@title}}
-        \vspace{3cm} 
-        
+        \vspace{3cm}
+
         \normalsize
         \bfseries
         \begin{tabular}{l}
             \@author
         \end{tabular}
 
-        \vspace{3cm} 
-    \end{center} 
-    
-    \begin{flushright} 
+        \vspace{3cm}
+    \end{center}
+
+    \begin{flushright}
         \begin{tabular}{l}
             \@informe
         \end{tabular}
-    \end{flushright} 
-    
+    \end{flushright}
+
     \vspace*{\fill}
 
-    \begin{center} 
+    \begin{center}
         \@date
-    \end{center} 
-    
+    \end{center}
+
     \newpage
-    
-    \iftesis
+
+    \ifthesis
         \makeportadatesis
     \fi
 }
@@ -327,16 +332,18 @@
 \setkeys{corpus}{siglas=false, glosario=false, simbolos=false}
 \newcommand{\makecorpus}[1][]{%
     \setkeys{corpus}{#1}
-    
-    \makededicatoria
-   
+
+    \ifthesis
+        \makededicatoria
+    \fi
+
     % Tabla de contenido
     \pagenumbering{roman}
     \begin{center}
         \tableofcontents
     \end{center}
     \newpage
-    
+
     \makeabstract
 
     % Glosario
@@ -346,7 +353,7 @@
         \listofglosario
         \newpage
     \fi
-    
+
     % Siglas
     \ifKV@corpus@siglas
         \phantomsection
@@ -354,7 +361,7 @@
         \listofsigla
         \newpage
     \fi
-    
+
     % Simbolos
     \ifKV@corpus@simbolos
         \phantomsection
@@ -362,7 +369,7 @@
         \listofsimbolo
         \newpage
     \fi
-    
+
     % Lista de Figuras
     {%
     \iffigures
@@ -373,7 +380,7 @@
         \newpage
     \fi
     }
-    
+
     % Lista de Tablas
     {%
     \iftables
@@ -384,16 +391,16 @@
         \newpage
     \fi
     }
-    
+
     \pagenumbering{arabic}
 }
 
 % ========== Anexo =================
 \newenvironment{anexos}[1][Anexos]{
-    % Para dejar sin numero de pagina los anexos 
+    % Para dejar sin numero de pagina los anexos
     \cleardoublepage
     \pagenumbering{gobble}
-    
+
     \appendix
     \phantomsection
     \addcontentsline{toc}{section}{#1}
